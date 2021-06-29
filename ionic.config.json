@@ -1,0 +1,7 @@
+{
+  "name": "relocalize-ionic",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
