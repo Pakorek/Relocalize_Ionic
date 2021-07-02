@@ -1,0 +1,26 @@
+.select-container {
+    /*width: 80%;*/
+}
+
+.alert-wrapper {
+    width: 70% !important;
+    max-width: 70% !important;
+}
+
+.modal {
+    align-items: start;
+}
+
+.ion-note {
+    font-size: 16px !important;
+}
+
+.center {
+    text-align: center;
+}
+
+.flex-end {
+    position: fixed;
+    bottom: 50px;
+    width: 100%;
+}

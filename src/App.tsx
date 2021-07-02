@@ -9,7 +9,7 @@ import {
   IonTabs,
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, home, person, search, square, triangle } from 'ionicons/icons';
+import { add, ellipse, home, person, search, square, triangle } from 'ionicons/icons';
 import Home from './pages/Home';
 import Search from './pages/Search';
 import Myspace from './pages/Myspace';
@@ -33,6 +33,7 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import React from 'react';
+import AddPro from './pages/AddPro';
 
 const App: React.FC = () => (
   <IonApp>
@@ -44,6 +45,9 @@ const App: React.FC = () => (
           </Route>
           <Route exact path="/search">
             <Search />
+          </Route>
+          <Route exact path="/add">
+            <AddPro />
           </Route>
           <Route path="/myspace">
             <Myspace />
@@ -60,6 +64,10 @@ const App: React.FC = () => (
           <IonTabButton tab="search" href="/search">
             <IonIcon icon={search} />
             <IonLabel>Rechercher</IonLabel>
+          </IonTabButton>
+          <IonTabButton tab="add" href="/add">
+            <IonIcon icon={add} />
+            <IonLabel>Ajouter</IonLabel>
           </IonTabButton>
           <IonTabButton tab="myspace" href="/myspace">
             <IonIcon icon={person} />
