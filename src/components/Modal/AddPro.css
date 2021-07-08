@@ -1,0 +1,49 @@
+.select-container {
+    /*width: 80%;*/
+}
+
+.alert-wrapper {
+    width: 70% !important;
+    max-width: 70% !important;
+}
+
+.back-white {
+    background-color: white;
+}
+
+.modal {
+    align-items: start;
+}
+
+ion-content {
+    --background:  #DDD8C4 !important;
+}
+
+ion-item-divider {
+    --min-height: 0;
+    margin-bottom: 10px;
+}
+
+.ion-note {
+    font-size: 16px !important;
+}
+
+.center {
+    text-align: center;
+}
+
+.flex-end {
+    position: fixed;
+    bottom: 50px;
+    width: 100%;
+}
+
+.schedules-item {
+    font-size: 18px !important;
+}
+
+.am-pm {
+    border: 1px solid lightgray;
+    border-radius: 3px;
+}
+

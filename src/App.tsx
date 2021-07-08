@@ -9,10 +9,10 @@ import {
   IonTabs,
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { add, ellipse, home, person, search, square, triangle } from 'ionicons/icons';
+import { add, ellipse, home, person, playCircle, search, square, triangle } from 'ionicons/icons';
 import Home from './pages/Home';
 import Search from './pages/Search';
-import Myspace from './pages/Myspace';
+import Myspace from './pages/Signin';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -34,6 +34,8 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import React from 'react';
 import AddPro from './pages/AddPro';
+import { AuthGate } from './components/AuthGate';
+import CardExamples from './pages/Sandbox';
 
 const App: React.FC = () => (
   <IonApp>
@@ -50,11 +52,15 @@ const App: React.FC = () => (
             <AddPro />
           </Route>
           <Route path="/myspace">
-            <Myspace />
+            <AuthGate />
           </Route>
           <Route exact path="/">
             <Redirect to="/home" />
           </Route>
+          <Route exact path="/sandbox">
+           <CardExamples />
+          </Route>
+
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton tab="home" href="/home">
@@ -73,6 +79,11 @@ const App: React.FC = () => (
             <IonIcon icon={person} />
             <IonLabel>Mon espace</IonLabel>
           </IonTabButton>
+          <IonTabButton tab="sandbox" href="/sandbox">
+            <IonIcon icon={playCircle} />
+            <IonLabel>Sandbox</IonLabel>
+          </IonTabButton>
+
         </IonTabBar>
       </IonTabs>
     </IonReactRouter>

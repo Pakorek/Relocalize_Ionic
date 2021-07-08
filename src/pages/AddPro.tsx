@@ -12,6 +12,8 @@ import {
 } from '@ionic/react';
 import './AddPro.css';
 import React, { useState } from 'react';
+import { useCreateShopMutation } from '../mutations/createShopMutation';
+import { ShopInput } from '../mutations/createShopMutation';
 
 const axios = require('axios').default;
 
@@ -23,6 +25,9 @@ type APIresponse = {
   zipcode: string;
   city: string;
   department: string;
+  country: string;
+  latitude: number;
+  longitude: number;
 }
 
 type newPro = {
@@ -30,7 +35,7 @@ type newPro = {
 
 }
 
-const AddPro: React.FC = () => {
+const AddProOld: React.FC = () => {
 
   // submit potential pro
   const [society, setSociety] = useState<string>();
@@ -48,13 +53,14 @@ const AddPro: React.FC = () => {
     // add db
     // alert success
     // raz form
-  }
+  };
 
   // Create component Modal Pro
   const [showModal, setShowModal] = useState(false);
   const [siret, setSiret] = useState<string>();
   const [APIres, setAPIres] = useState<APIresponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState([])
 
   const apiSearch = async () => {
     const API_ADDRESS = 'https://data.opendatasoft.com/api/records/1.0/search/?dataset=sirene_v3%40public&q=';
@@ -63,6 +69,7 @@ const AddPro: React.FC = () => {
     try {
       const response = await axios.get(API_ADDRESS + siret);
       const fields = response.data.records[0].fields;
+      console.log('response', fields);
       const owner = fields.l1_adressage_unitelegale;
       const activity = fields.soussectionetablissement;
       const subActivity = fields.classeetablissement;
@@ -70,7 +77,19 @@ const AddPro: React.FC = () => {
       const zipcode = fields.codepostaletablissement;
       const city = fields.libellecommuneetablissement;
       const department = fields.departementetablissement;
-      setAPIres({ owner, activity, subActivity, address, zipcode, city, department });
+      const country = "FRANCE";
+      const [latitude, longitude] = fields.geolocetablissement;
+      setAPIres({
+        owner,
+        activity,
+        subActivity,
+        address,
+        zipcode,
+        city,
+        department,
+        country,
+        latitude,
+        longitude });
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -82,21 +101,52 @@ const AddPro: React.FC = () => {
   };
 
   // Submit my society
+  // create user if not exist
+  // create shop
+  // create marker map
+  const [createShop] = useCreateShopMutation();
+
+  const submitShop = async () => {
+    if (society && siret && APIres) {
+      const values: ShopInput = {
+        name: society,
+        professionalArea: APIres.activity,
+        professionalClass: APIres.subActivity,
+        siret: siret,
+        latitude: APIres.latitude,
+        longitude: APIres.longitude,
+        address_1: APIres.address,
+        city: APIres.city,
+        department: APIres.department,
+        country: "FRANCE",
+        zipCode: APIres.zipcode
+      }
+      try {
+        //@ts-ignore
+        await createShop(values)
+        setShowModal(false)
+      } catch (err) {
+        setError(err);
+        console.error('submit shop err', err.networkError)
+      }
+    }
+  }
 
 
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
+        <IonToolbar color="primary">
           <IonTitle>Ajouter un professionnel</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         <section>
           <p className="center">Contribuez au projet en proposant un professionnel</p>
-          <p className="center">Saisissez les informations suivantes et nous nous chargerons d'ajouter son profil au plus vite</p>
+          <p className="center">Saisissez les informations suivantes et nous nous chargerons d'ajouter son profil au
+            plus vite</p>
         </section>
-
+        {/*{error && <pre>{JSON.stringify(error)}</pre>}*/}
         <IonList>
           <IonItem>
             <IonLabel position="floating">Nom de l'entreprise</IonLabel>
@@ -136,19 +186,24 @@ const AddPro: React.FC = () => {
             <IonInput placeholder="Code postal" value={zipCode} onIonChange={e => setZipCode(e.detail.value!)} />
             <IonInput placeholder="Pays" value={country} onIonChange={e => setCountry(e.detail.value!)} />
           </IonItem>
-          <IonButton expand="block" fill="outline" onClick={() => proposePro()}>Je contribue !</IonButton>
+          <IonButton expand="block" color="secondary" onClick={() => proposePro()}>Je contribue !</IonButton>
 
           {/*modal*/}
           <IonModal isOpen={showModal} cssClass='modal'>
             <IonList>
               <IonItem>
+                <IonLabel position="floating">Nom de l'entreprise</IonLabel>
+                <IonInput
+                  value={society}
+                  onIonChange={e => setSociety(e.detail.value!)} clearInput />
+              </IonItem>
+              <IonItem>
                 <IonLabel position="floating">SIRET</IonLabel>
                 <IonInput
                   value={siret}
-                  type="number"
                   onIonChange={e => setSiret(e.detail.value!)} clearInput />
               </IonItem>
-              <IonButton expand="block" fill="outline" onClick={() => apiSearch()}>Rechercher</IonButton>
+              <IonButton expand="block" color="secondary" onClick={() => apiSearch()}>Rechercher</IonButton>
 
               {loading && <IonProgressBar type="indeterminate" />}
 
@@ -157,7 +212,6 @@ const AddPro: React.FC = () => {
                 <IonItem>
                   <IonLabel>Propriétaire</IonLabel>
                   <IonNote slot="end" className="ion-note">{APIres.owner}</IonNote>
-
                 </IonItem>
                 <IonItem>
                   <IonLabel>Activité</IonLabel>
@@ -183,23 +237,23 @@ const AddPro: React.FC = () => {
                   <IonLabel>Département</IonLabel>
                   <IonNote slot="end" className="ion-note">{APIres.department}</IonNote>
                 </IonItem>
-                <IonButton expand="block" fill="outline" onClick={() => console.log}>Oui c'est bien moi</IonButton>
+                <IonButton expand="block" color="secondary" onClick={() => submitShop()}>Oui c'est bien moi</IonButton>
               </IonList>
               }
             </IonList>
 
-            <IonButton onClick={() => setShowModal(false)}>Close Modal</IonButton>
+            <IonButton color="secondary" onClick={() => setShowModal(false)}>Close Modal</IonButton>
           </IonModal>
           {/*modal end*/}
         </IonList>
 
         <IonList className="flex-end">
           <h1 className="center">Vous souhaitez ajouter votre entreprise ? </h1>
-          <IonButton expand="block" onClick={() => setShowModal(true)}>Cliquez ici !</IonButton>
+          <IonButton color="tertiary" expand="block" onClick={() => setShowModal(true)}>Cliquez ici !</IonButton>
         </IonList>
       </IonContent>
     </IonPage>
   );
 };
 
-export default AddPro;
+export default AddProOld;

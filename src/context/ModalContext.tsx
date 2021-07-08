@@ -1,6 +1,8 @@
-import { createContext, Dispatch } from "react";
-import { Action } from '../reducers/modalReducer';
+import React, { createContext, Dispatch } from "react";
+import { ModalAction } from '../reducers/modalReducer';
+import { ModalDispatch, ModalState } from '../components/Search/Mapbox';
 
-const ModalContext = createContext<Dispatch<Action> | null>(null);
+const ModalContext = createContext<Dispatch<ModalAction> | null>(null);
+// const ModalContext = createContext<{state: ModalState; dispatch: ModalDispatch} | undefined>(undefined)
 
 export default ModalContext;

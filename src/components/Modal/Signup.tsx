@@ -1,8 +1,7 @@
 import React, { useState, FormEvent, useReducer } from 'react';
 import { useCreateUserMutation } from '../../mutations/createUserMutation';
 import { IonButton, IonInput, IonItem, IonLabel, IonList, IonModal } from '@ionic/react';
-import { Action, modalReducer } from '../../reducers/modalReducer';
-import ModalContext from '../../context/ModalContext';
+import { ModalAction, modalReducer } from '../../reducers/modalReducer';
 
 export type UserInput = {
   firstname: string,
@@ -12,7 +11,7 @@ export type UserInput = {
   // role: string
 }
 
-const Signup = ({ state, dispatch }: {state: boolean, dispatch: React.Dispatch<Action>}) => {
+const Signup = ({ state, dispatch }: {state: boolean, dispatch: React.Dispatch<ModalAction>}) => {
 
   const [createUser] = useCreateUserMutation();
 
@@ -23,13 +22,13 @@ const Signup = ({ state, dispatch }: {state: boolean, dispatch: React.Dispatch<A
   const [lastname, setLastname] = useState<string>();
   const [error, setError] = useState([]);
 
-  console.log('state component', state);
-
   const signup = async () => {
     try {
+      // check password / confirm
       const values = { firstname, lastname, email, password };
       // @ts-ignore
       await createUser(values);
+      toggleModal();
       // login him so display mySpace
     } catch (e) {
       setError(e);

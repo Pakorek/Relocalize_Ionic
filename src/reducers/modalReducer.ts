@@ -1,16 +1,21 @@
-export type Action =
+export type ModalAction =
   | {
   type: 'TOGGLE_SIGNUP_MODAL';
 }
+  | {
+  type: 'TOGGLE_ADDPRO_MODAL';
+}
 
-export const modalReducer = (state: boolean, action: Action): boolean => {
+export const modalReducer = (state: boolean, action: ModalAction): boolean => {
   let nextState: boolean;
 
   switch (action.type) {
     case 'TOGGLE_SIGNUP_MODAL':
       nextState = !state;
-      console.log('next', nextState);
-      console.log('state', state);
+      return nextState;
+
+    case 'TOGGLE_ADDPRO_MODAL':
+      nextState = !state;
       return nextState;
 
     default:
