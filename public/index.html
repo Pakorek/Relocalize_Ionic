@@ -18,6 +18,24 @@
 
     <link rel="shortcut icon" type="image/png" href="%PUBLIC_URL%/assets/icon/favicon.png" />
 
+    <!-- Cloudinary -->
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+
+    <!--<script type="text/javascript">
+      const myWidget = cloudinary.createUploadWidget({
+          cloudName: 'pakorek',
+          uploadPreset: 'my_preset'}, (error, result) => {
+          if (!error && result && result.event === "success") {
+            console.log('Done! Here is the image info: ', result.info);
+          }
+        }
+      )
+
+      document.getElementById("upload_widget").addEventListener("click", function(){
+        myWidget.open();
+      }, false);
+    </script>-->
+
     <!-- mapbox -->
 <!--    <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />-->
 

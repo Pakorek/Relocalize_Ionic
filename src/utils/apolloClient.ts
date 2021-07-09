@@ -1,6 +1,7 @@
-import { ApolloLink } from "apollo-link";
+import { ApolloLink, RequestHandler } from 'apollo-link';
 import { HttpLink } from "apollo-link-http";
 import {ApolloClient, InMemoryCache} from "@apollo/client";
+import { createUploadLink } from "apollo-upload-client";
 import {useAuthToken} from "../hooks/auth";
 
 const authMiddleware = (authToken: string): ApolloLink  =>
@@ -17,7 +18,7 @@ const authMiddleware = (authToken: string): ApolloLink  =>
         return forward(operation);
     });
 
-const httpLink = new HttpLink({ uri: "http://127.0.0.1:4300/graphql" });
+const httpLink = createUploadLink({ uri: "http://127.0.0.1:4300/graphql" }) as any;
 const cache = new InMemoryCache({});
 
 export const useAppApolloClient = () => {
