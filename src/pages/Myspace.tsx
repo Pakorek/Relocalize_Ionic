@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useQuery, ApolloError } from '@apollo/react-hooks';
+
 import {
   IonAvatar, IonButton,
   IonCard, IonChip,
@@ -12,49 +14,38 @@ import {
 } from '@ionic/react';
 import { useCookies } from 'react-cookie';
 import { mail, share, star, wine } from 'ionicons/icons';
-import {AdvancedImage} from '@cloudinary/react';
-import {Cloudinary} from "@cloudinary/base";
+import { AdvancedImage } from '@cloudinary/react';
+import { Cloudinary } from '@cloudinary/base';
 // Import any actions required for transformations.
-import {fill} from "@cloudinary/base/actions/resize";
+import { fill } from '@cloudinary/base/actions/resize';
 import UploadAvatar from '../components/UploadFile';
+import gql from 'graphql-tag';
 
 const Myspace: React.FC = () => {
 
-  const [cookies, ,] = useCookies(["user"]);
+  const [user, setUser] = useState({ firstname: '', lastname: '', avatar: '' });
 
-/*
-  const [file, setFile] = useState<Blob>()
-  // On file upload (click the upload button)
-  const onFileUpload = () => {
+  const getUSER = gql`
+      query getUser{
+          getUser {
+              firstName
+              lastName
+              email
+              avatar
+          }
+      }
+  `;
 
-    // Create an object of formData
-    const formData = new FormData();
-
-    // On file select (from the pop up)
-    const onFileChange = (e: any) => {
-      // Update the state
-      setFile(e.target.files[0]);
-    };
-    if (file) {
-      // Update the formData object
-      formData.append(
-        "myFile",
-        file,
-        file.name
-      );
+  const { loading, error, data } = useQuery(getUSER, {
+    onCompleted: () => {
+      setUser({ firstname: data.getUser.firstName, lastname: data.getUser.lastName, avatar: data.getUser.avatar });
     }
+  });
 
+  // need context to reload component when UploadAvatar handled
 
-    // Details of the uploaded file
-    console.log(file);
-
-    // Request made to the backend api
-    // Send formData object
-    axios.post("api/uploadfile", formData);
-  };
-*/
-
-  // gql to get user info with cookie.user
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{JSON.stringify(error)}</p>;
 
   return (
     <IonPage>
@@ -65,19 +56,20 @@ const Myspace: React.FC = () => {
       </IonHeader>
       <IonContent fullscreen>
         <IonContent>
-
-          <IonCard color="light" >
+          <IonCard color="light">
             <IonItem color="light">
               <IonAvatar slot="start">
-                <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y" />
+                <img src={user.avatar} />
               </IonAvatar>
               <IonList>
-                <IonLabel className="card-title">Brice d'Arménia</IonLabel>
+                <IonLabel className="card-title">{user.firstname + ' ' + user.lastname}</IonLabel>
                 <IonNote>
                   Décrivez-vous en quelques mots...
                 </IonNote>
               </IonList>
+
               <UploadAvatar />
+
               <IonButton fill="outline" slot="end">Editer</IonButton>
             </IonItem>
             <IonChip color="success" className="ion-chip">
@@ -115,7 +107,7 @@ const Myspace: React.FC = () => {
         </IonContent>
       </IonContent>
     </IonPage>
-  )
-}
+  );
+};
 
 export default Myspace;

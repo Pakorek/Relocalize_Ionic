@@ -18,7 +18,9 @@ import { useCookies } from 'react-cookie';
 import Signup from '../components/Modal/Signup';
 import { modalReducer } from '../reducers/modalReducer';
 import ModalContext from '../context/ModalContext';
+import MapContext from '../context/MapContext';
 
+// Manage Provider
 
 const Signin: React.FC = () => {
 
@@ -51,8 +53,12 @@ const Signin: React.FC = () => {
     dispatch({ type: 'TOGGLE_SIGNUP_MODAL' })
   }
 
+  const [modalState, modalDispatch] = useReducer(modalReducer, false);
+  const modalValues = {state: modalState, dispatch: modalDispatch}
+
+
   return (
-    <ModalContext.Provider value={dispatch}>
+    <ModalContext.Provider value={modalValues}>
       <IonPage>
         <IonHeader>
           <IonToolbar>
@@ -84,7 +90,7 @@ const Signin: React.FC = () => {
             </IonText>
           </IonList>
           {/* component signup modal*/}
-          <Signup state={state} dispatch={dispatch}/>
+          <Signup />
         </IonContent>
       </IonPage>
     </ModalContext.Provider>

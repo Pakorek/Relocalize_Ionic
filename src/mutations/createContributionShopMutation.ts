@@ -36,8 +36,16 @@ export const createContributionShopMutationGQL = gql`
             department: $department,
             zipCode: $zipCode
         }) {
-        name
-    }
+          name
+          professionalArea
+          shortDescription
+          latitude
+          longitude
+          address_1
+          city
+          department
+          zipCode
+        }
     }
 `;
 

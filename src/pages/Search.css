@@ -1,0 +1,13 @@
+ion-content {
+    --background: #f2efe9 !important;
+}
+
+.card {
+    margin-top: -40px;
+    z-index: 100;
+    border: 1px solid;
+}
+
+.edit-button {
+    font-size: 20px !important;
+}

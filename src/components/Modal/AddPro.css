@@ -3,8 +3,8 @@
 }
 
 .alert-wrapper {
-    width: 70% !important;
-    max-width: 70% !important;
+    width: 90% !important;
+    max-width: 90% !important;
 }
 
 .back-white {
@@ -13,10 +13,6 @@
 
 .modal {
     align-items: start;
-}
-
-ion-content {
-    --background:  #DDD8C4 !important;
 }
 
 ion-item-divider {

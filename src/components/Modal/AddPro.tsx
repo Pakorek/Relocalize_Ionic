@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   IonButton, IonCard, IonCardContent, IonCardHeader, IonCol, IonContent, IonDatetime, IonGrid,
   IonInput,
@@ -13,9 +13,11 @@ import {
 import { AxiosResponse } from 'axios';
 import './AddPro.css';
 import { ModalAction } from '../../reducers/modalReducer';
-import { MarkerState } from '../Search/Mapbox';
+import { MarkerState, ModalDispatch, ShopType } from '../Search/Mapbox';
 import { ShopInput, useCreateContributionShopMutation } from '../../mutations/createContributionShopMutation';
 import ModalContext from '../../context/ModalContext';
+import { useMap } from 'react-leaflet';
+import ShopContext from '../../context/ShopContext';
 
 const axios = require('axios').default;
 
@@ -36,7 +38,6 @@ const getAddress = async (lat: number, lng: number) => {
   };
   try {
     const response: AxiosResponse = await axios.request(options);
-    console.log(response.data.results);
     if (response.status === 200) return response.data.results[0].components;
   } catch (err) {
     console.error(err);
@@ -44,15 +45,7 @@ const getAddress = async (lat: number, lng: number) => {
 };
 
 
-const Addpro = ({
-                  state,
-                  dispatch,
-                  markerState,
-                }: {
-  state: boolean,
-  dispatch: React.Dispatch<ModalAction>,
-  markerState: MarkerState
-}) => {
+const Addpro = ({ markerState }: { markerState: MarkerState }) => {
   const [society, setSociety] = useState<string>();
   const [activity, setActivity] = useState<string>();
   const [description, setDescription] = useState<string>();
@@ -109,9 +102,14 @@ const Addpro = ({
   const [sundayPmFrom, setSundayPmFrom] = useState<string>();
   const [sundayPmTo, setSundayPmTo] = useState<string>();
 
+  const values = useContext(ModalContext)
+  let shopValues = useContext(ShopContext)
+
   const toggleModal = () => {
-    dispatch({ type: 'TOGGLE_ADDPRO_MODAL' });
+    if (values)
+      values.dispatch({ type: 'TOGGLE_ADDPRO_MODAL' });
   };
+
   const { lat, lng } = markerState;
 
   // get address from reverse geoloc
@@ -123,19 +121,14 @@ const Addpro = ({
       setZipCode(APIres.postcode);
       setCity(APIres.city);
       setDepartment(APIres.state_district);
-      // const number: string = APIres.house_number;
-      // const street: string = APIres.street;
-      // const postcode: string = APIres.postcode;
-      // const city: string = APIres.city;
-      // const stateDistrict: string = APIres.state_district;
     };
     fetchAddress();
   }, [markerState]);
 
   const [createShop] = useCreateContributionShopMutation();
+  const map = useMap()
 
   const proposePro = async () => {
-    console.log('submitted');
     // loading true
     if (society && activity && description && num && street && zipCode && city && department) {
       try {
@@ -159,6 +152,10 @@ const Addpro = ({
         toggleModal();
         // leave edition mode
         // reload map
+        map.closePopup()
+        if (shopValues.setShops)
+          shopValues.setShops([...shopValues.shops, input])
+        // map.invalidateSize()
       } catch (e) {
         // alert error
         console.error(e);
@@ -183,8 +180,9 @@ const Addpro = ({
 
   return (
     <ModalContext.Consumer>
-      {(dispatch) => (
-        <IonModal isOpen={state} cssClass='modal'>
+      { (value) => (
+        value &&
+        <IonModal isOpen={value.state} cssClass='modal'>
           <IonContent scrollEvents={true}
                       onIonScrollStart={() => {
                       }}
@@ -469,7 +467,7 @@ const Addpro = ({
             </IonCard>
             <IonButton expand="block" color="secondary" size="large" onClick={proposePro}>Je contribue !</IonButton>
             <IonButton expand="block" fill="outline" color="secondary" className="back-white"
-                       onClick={toggleModal}>Retour</IonButton>
+                       onClick={() => value.dispatch({ type: 'TOGGLE_ADDPRO_MODAL' })}>Retour</IonButton>
           </IonContent>
 
         </IonModal>
