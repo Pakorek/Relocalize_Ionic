@@ -8,10 +8,19 @@ body { margin: 0; padding: 0; }
 }
 
 .leaflet-popup-content {
-    width: 100px !important;
+    width: 250px !important;
+    line-height: 1;
 }
 
 .popup-button {
     display: block;
     margin: 0 auto;
+}
+.marker_professionalArea {
+    color: darkgreen;
+    font-size: 18px;
+}
+.marker_description {
+    color: grey;
+    font-size: 16px;
 }

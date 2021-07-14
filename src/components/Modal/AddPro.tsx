@@ -12,8 +12,7 @@ import {
 } from '@ionic/react';
 import { AxiosResponse } from 'axios';
 import './AddPro.css';
-import { ModalAction } from '../../reducers/modalReducer';
-import { MarkerState, ModalDispatch, ShopType } from '../Search/Mapbox';
+import { MarkerState } from '../Search/Mapbox';
 import { ShopInput, useCreateContributionShopMutation } from '../../mutations/createContributionShopMutation';
 import ModalContext from '../../context/ModalContext';
 import { useMap } from 'react-leaflet';
@@ -150,12 +149,10 @@ const Addpro = ({ markerState }: { markerState: MarkerState }) => {
         // loading false
         // alert success
         toggleModal();
-        // leave edition mode
-        // reload map
         map.closePopup()
+
         if (shopValues.setShops)
           shopValues.setShops([...shopValues.shops, input])
-        // map.invalidateSize()
       } catch (e) {
         // alert error
         console.error(e);

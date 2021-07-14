@@ -38,8 +38,7 @@ const Signin: React.FC = () => {
   const [error, setError] = useState();
 
   const login = async () => {
-    console.log('email', email)
-    console.log('pass', password)
+
     try {
       // @ts-ignore
       // don't know how to types this (yet)

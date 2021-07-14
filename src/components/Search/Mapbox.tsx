@@ -32,8 +32,8 @@ export type ModalState = {
 }
 export type ModalDispatch = (action: ModalAction) => void
 
-function InteractiveComponent({ state, dispatch }: { state: MarkerState, dispatch: React.Dispatch<Action> }) {
-  const [marker, setMarker] = useState<MarkerState>({ lat: 0, lng: 0 });
+function InteractiveComponent({ dispatch }: { dispatch: React.Dispatch<Action> }) {
+
   const map = useMapEvents({
     click: (e) => {
       map.locate();
@@ -61,7 +61,7 @@ const Mapbox: (onEdit: { onEdit: boolean }) => (JSX.Element) = (onEdit: { onEdit
           getShops(country: "FRANCE") {
               name
               professionalArea
-              professionalClass
+              shortDescription
               address_1
               zipCode
               city
@@ -105,7 +105,7 @@ const Mapbox: (onEdit: { onEdit: boolean }) => (JSX.Element) = (onEdit: { onEdit
 
             {/*  EditMod  */}
             {onEdit.onEdit &&
-            <InteractiveComponent state={markerState} dispatch={markerDispatch} />
+            <InteractiveComponent dispatch={markerDispatch} />
             }
             {/*Modal*/}
             <Addpro markerState={markerState} />
@@ -123,9 +123,9 @@ const Mapbox: (onEdit: { onEdit: boolean }) => (JSX.Element) = (onEdit: { onEdit
                 <Marker position={[shop.latitude, shop.longitude]} key={key}>
                   <Popup>
                     <h1>{shop.name}</h1>
-                    <p>{shop.professionalArea}</p>
-                    <br />
-                    <a href="/">Link</a>
+                    <p className="marker_professionalArea">{shop.professionalArea}</p>
+                    <p className="marker_description">{shop.shortDescription}</p>
+                    <p><a href="/">Link</a></p>
                   </Popup>
                 </Marker>
               ),

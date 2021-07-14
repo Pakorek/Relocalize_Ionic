@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonHeader, IonItem } from '@ionic/react';
+import Swal from 'sweetalert2';
+import './UploadFile.css';
 
 export type Upload = {
   url: string,
@@ -16,8 +19,8 @@ const UPLOAD_AVATAR = gql`
 const UploadAvatar = () => {
 
   const [uploadFile] = useMutation(UPLOAD_AVATAR);
-  const [file, setFile] = useState(null);
-  const [err, setErr] = useState()
+  const [file, setFile] = useState<File>();
+  const [err, setErr] = useState();
 
   // Store in the state the file
   const handleChange = (e: any) => {
@@ -25,28 +28,37 @@ const UploadAvatar = () => {
   };
 
   // Trigger the mutation when we click the submit button
-  const handleClick = () => {
+  const handleClick = async () => {
     try {
-      uploadFile({
+      await uploadFile({
         variables: {
           file,
-        }
-      }).catch(e => console.log('uploadFile catch err', JSON.stringify(e)))
+        },
+        refetchQueries: ['getUser'],
+      });
+      // alert success
+      await Swal.fire('Succès !', 'Image enregistrée !', 'success');
+      // reload Myspace to print new avatar
+      // or query user to get avatar and set in useState (context)
+
     } catch (e) {
-      setErr(e)
-      console.error('catch component', e)
+      setErr(e);
+      // alert error
+      console.error('catch component', e);
     }
   };
 
-  if (err) return (<p>{JSON.stringify(err)}</p>)
+  if (err) return (<p>{JSON.stringify(err)}</p>);
 
   return (
-    <div>
-      <input id="logo" type="file" onChange={handleChange} />
-      <button type="button" onClick={handleClick}>
-        Submit
-      </button>
-    </div>
+    <IonCard>
+      <IonCardHeader>Modifier l'image de profil</IonCardHeader>
+      {/*<input id="logo" type="file" onChange={handleChange} className="custom-file-input" />*/}
+      <IonCardContent className="file-card">
+        <input slot="start" id="logo" type="file" onChange={handleChange} />
+        <IonButton slot="end" color="secondary" size="small" onClick={handleClick}>Modifier</IonButton>
+      </IonCardContent>
+    </IonCard>
   );
 };
 

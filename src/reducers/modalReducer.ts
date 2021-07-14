@@ -1,9 +1,10 @@
 export type ModalAction =
   | {
   type: 'TOGGLE_SIGNUP_MODAL';
-}
-  | {
+} | {
   type: 'TOGGLE_ADDPRO_MODAL';
+} | {
+  type: 'TOGGLE_PROFIL_MODAL';
 }
 
 export const modalReducer = (state: boolean, action: ModalAction): boolean => {
@@ -15,6 +16,10 @@ export const modalReducer = (state: boolean, action: ModalAction): boolean => {
       return nextState;
 
     case 'TOGGLE_ADDPRO_MODAL':
+      nextState = !state;
+      return nextState;
+
+    case 'TOGGLE_PROFIL_MODAL':
       nextState = !state;
       return nextState;
 
